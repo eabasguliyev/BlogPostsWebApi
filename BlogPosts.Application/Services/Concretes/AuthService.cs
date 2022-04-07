@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BlogPosts.API.AuthManager;
 using BlogPosts.Application.Services.Abstracts;
 using BlogPosts.Application.Services.Requests;
 using BlogPosts.Application.Services.Responses;
@@ -11,15 +12,17 @@ using Microsoft.AspNetCore.Identity;
 
 namespace BlogPosts.Application.Services.Concretes
 {
-    public class UserService:IUserService
+    public class AuthService:IAuthService
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
+        private readonly IJWTAuthenticationManager _authManager;
 
-        public UserService(UserManager<User> userManager, SignInManager<User> signInManager)
+        public AuthService(UserManager<User> userManager, SignInManager<User> signInManager, IJWTAuthenticationManager authManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _authManager = authManager;
         }
 
         public async Task<UserLoginResponse> Login(UserLoginRequest userLoginRequest)
@@ -30,12 +33,15 @@ namespace BlogPosts.Application.Services.Concretes
 
             if (user != null)
             {
-                var result = await _signInManager.CheckPasswordSignInAsync(user, userLoginRequest.Password, false);
+                var result = await _userManager.CheckPasswordAsync(user, userLoginRequest.Password);
 
-                if (result.Succeeded)
+                if (result)
                 {
+                    var token = _authManager.Authenticate(userLoginRequest.Username);
+
                     return await Task.FromResult(new UserLoginResponse()
                     {
+                        Token = token,
                         Status = true,
                         Message = "Login is successfully"
                     });
@@ -46,6 +52,8 @@ namespace BlogPosts.Application.Services.Concretes
 
             message = "There is no account for associated username";
 
+
+            
             return await Task.FromResult(new UserLoginResponse()
             {
                 Status = false,
@@ -69,7 +77,7 @@ namespace BlogPosts.Application.Services.Concretes
                 resp = new UserRegisterResponse()
                 {
                     Status = true,
-                    Message = "User successfully registered"
+                    Message = "You successfully registered"
                 };
             }
             else

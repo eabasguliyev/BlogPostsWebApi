@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using BlogPosts.Application.Services.Abstracts;
 using BlogPosts.Application.Services.Requests;
@@ -15,9 +16,20 @@ namespace BlogPosts.Application.Services.Concretes
         {
             _unitOfWork = unitOfWork;
         }
-        public Task<List<GetAllArticleResponse>> GetAll()
+        public async Task<List<GetAllArticleResponse>> GetAll()
         {
-            throw new System.NotImplementedException();
+            var result = await _unitOfWork.ArticleRepository.GetAll(noTracking: true, includeProperties: "Author");
+            return result.Select(r => new GetAllArticleResponse
+            {
+                Id = r.Id,
+                AuthorId = r.AuthorId,
+                Author = r.Author,
+                CreateDate = r.CreateDate,
+                IsDeleted = r.IsDeleted,
+                ModifyDate = r.ModifyDate,
+                Text = r.Text,
+                Title = r.Title
+            }).ToList();
         }
 
         public Task<GetAllArticleResponse> Get(int id)
@@ -25,9 +37,15 @@ namespace BlogPosts.Application.Services.Concretes
             throw new System.NotImplementedException();
         }
 
-        public Task<CreateArticleResponse> Create(CreateArticleRequest req)
+        public async Task<CreateArticleResponse> Create(CreateArticleRequest req)
         {
-            throw new System.NotImplementedException();
+            await _unitOfWork.ArticleRepository.Add(new Domain.Entities.Article()
+            {
+                Title = req.Title,
+                Text = req.Text
+            });
+
+            return new CreateArticleResponse();
         }
 
         public Task Delete(int id)

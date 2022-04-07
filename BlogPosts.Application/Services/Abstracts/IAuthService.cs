@@ -4,7 +4,7 @@ using BlogPosts.Application.Services.Responses;
 
 namespace BlogPosts.Application.Services.Abstracts
 {
-    public interface IUserService
+    public interface IAuthService
     {
         Task<UserLoginResponse> Login(UserLoginRequest userLoginRequest);
         Task<UserRegisterResponse> Register(UserRegisterRequest userRegisterRequest);

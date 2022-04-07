@@ -9,13 +9,13 @@ namespace BlogPosts.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserController : ControllerBase
+    public class AuthController : ControllerBase
     {
-        private readonly IUserService _userService;
+        private readonly IAuthService _userService;
 
-        public UserController(IUserService userService)
+        public AuthController(IAuthService authService)
         {
-            _userService = userService;
+            _userService = authService;
         }
 
         [HttpPost("Signin")]
@@ -50,6 +50,7 @@ namespace BlogPosts.API.Controllers
                
                 return await Task.FromResult(resp);
             }
+
 
             return await _userService.Register(req);
         }

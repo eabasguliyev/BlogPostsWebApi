@@ -10,6 +10,7 @@ namespace BlogPosts.Application.Services.Responses
     {
         public bool Status { get; set; }
         public string Message { get; set; }
+        public string Token { get; set; }
         public List<ValidationError> ValidationErrors { get; set; }
         
     }
