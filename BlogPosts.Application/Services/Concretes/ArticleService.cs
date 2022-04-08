@@ -39,13 +39,20 @@ namespace BlogPosts.Application.Services.Concretes
 
         public async Task<CreateArticleResponse> Create(CreateArticleRequest req)
         {
-            await _unitOfWork.ArticleRepository.Add(new Domain.Entities.Article()
+            var newArticle = new Domain.Entities.Article()
             {
                 Title = req.Title,
-                Text = req.Text
-            });
+                Text = req.Text,
+                AuthorId = req.AuthorId
+            };
+            
+            await _unitOfWork.ArticleRepository.Add(newArticle);
 
-            return new CreateArticleResponse();
+            return new CreateArticleResponse()
+            {
+                Status = true,
+                Message = "Article Created"
+            };
         }
 
         public Task Delete(int id)

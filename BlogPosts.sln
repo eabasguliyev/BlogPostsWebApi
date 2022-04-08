@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.1.32228.430
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.32228.343
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlogPosts.API", "BlogPosts.API\BlogPosts.API.csproj", "{DC7C052F-E60A-46C4-985F-2AE50AFB6B51}"
 EndProject
@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlogPosts.Domain", "BlogPos
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlogPosts.Infrastructure", "BlogPosts.Infrastructure\BlogPosts.Infrastructure.csproj", "{16F1AA32-2131-402A-9801-0D052109E207}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlogPosts.Application", "BlogPosts.Application\BlogPosts.Application.csproj", "{6061FCDB-CC02-4748-827F-3A3E6E3D3552}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlogPosts.Application", "BlogPosts.Application\BlogPosts.Application.csproj", "{6061FCDB-CC02-4748-827F-3A3E6E3D3552}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlogPosts.Authentication", "BlogPosts.Authentication\BlogPosts.Authentication.csproj", "{EA5382A3-705D-4989-B7DB-395DD388FBF5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{6061FCDB-CC02-4748-827F-3A3E6E3D3552}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6061FCDB-CC02-4748-827F-3A3E6E3D3552}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6061FCDB-CC02-4748-827F-3A3E6E3D3552}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EA5382A3-705D-4989-B7DB-395DD388FBF5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA5382A3-705D-4989-B7DB-395DD388FBF5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA5382A3-705D-4989-B7DB-395DD388FBF5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA5382A3-705D-4989-B7DB-395DD388FBF5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

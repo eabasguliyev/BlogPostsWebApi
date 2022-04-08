@@ -23,6 +23,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using BlogPosts.API.AuthManager;
+using BlogPosts.Authentication.Configuration;
 
 namespace BlogPosts.API
 {
@@ -46,13 +47,10 @@ namespace BlogPosts.API
             });
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("blogPostsDb")));
-            services.AddIdentity<User, IdentityRole<int>>()
-                .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddDefaultTokenProviders();
+        
 
             // application services
             services.AddScoped<IAuthService, AuthService>();
-            services.AddAuthentication();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IArticleService, ArticleService>();
             services.AddCors(opt =>
@@ -74,28 +72,63 @@ namespace BlogPosts.API
                 options.Password.RequiredUniqueChars = 0;
             });
 
-            var tokenKey = Configuration.GetValue<string>("TokenKey");
-            var key = Encoding.ASCII.GetBytes(tokenKey);
+            // Update the JWT config from the settings
 
-            services.AddAuthentication(x =>
+            services.Configure<JwtConfig>(Configuration.GetSection("JwtConfig"));
+
+            services.AddAuthentication(options =>
             {
-                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             })
-            .AddJwtBearer(x =>
+            .AddJwtBearer(jwt =>
             {
-                x.RequireHttpsMetadata = false;
-                x.SaveToken = true;
-                x.TokenValidationParameters = new TokenValidationParameters
+                // Getting the secret from the config
+                var key = Encoding.ASCII.GetBytes(Configuration["JwtConfig:Secret"]);
+
+
+                jwt.SaveToken = true;
+                jwt.TokenValidationParameters = new TokenValidationParameters()
                 {
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ValidateIssuer = false,
-                    ValidateAudience = false
+                    ValidateIssuer = false, // ToDo: Update later
+                    ValidateAudience = false, //ToDo: Update later
+                    RequireExpirationTime = false, // ToDo Update
+                    ValidateLifetime = true,
                 };
             });
 
-            services.AddSingleton<IJWTAuthenticationManager>(new JWTAuthenticationManager(tokenKey));
+            services.AddIdentity<User, IdentityRole<int>>(options =>
+            {
+                options.SignIn.RequireConfirmedAccount = false;
+            })
+            .AddEntityFrameworkStores<ApplicationDbContext>();
+            //.AddDefaultTokenProviders();
+
+            //var tokenKey = Configuration.GetValue<string>("TokenKey");
+            //var key = Encoding.ASCII.GetBytes(tokenKey);
+
+            //services.AddAuthentication(x =>
+            //{
+            //    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            //    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            //})
+            //.AddJwtBearer(x =>
+            //{
+            //    x.RequireHttpsMetadata = false;
+            //    x.SaveToken = true;
+            //    x.TokenValidationParameters = new TokenValidationParameters
+            //    {
+            //        ValidateIssuerSigningKey = true,
+            //        IssuerSigningKey = new SymmetricSecurityKey(key),
+            //        ValidateIssuer = false,
+            //        ValidateAudience = false
+            //    };
+            //});
+
+            //services.AddSingleton<IJWTAuthenticationManager>(new JWTAuthenticationManager(tokenKey));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

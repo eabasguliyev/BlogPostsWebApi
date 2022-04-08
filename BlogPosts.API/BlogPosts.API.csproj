@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BlogPosts.Application\BlogPosts.Application.csproj" />
+    <ProjectReference Include="..\BlogPosts.Authentication\BlogPosts.Authentication.csproj" />
     <ProjectReference Include="..\BlogPosts.Infrastructure\BlogPosts.Infrastructure.csproj" />
   </ItemGroup>
 
