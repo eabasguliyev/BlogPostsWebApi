@@ -12,7 +12,7 @@ namespace BlogPosts.Application.Services.Responses
         public string Message { get; set; }
         public string Token { get; set; }
         public List<ValidationError> ValidationErrors { get; set; }
-        
+        public string RefreshToken { get; internal set; }
     }
 
     public record ValidationError(string Name, string Message);

@@ -41,7 +41,7 @@ namespace BlogPosts.Infrastructure.EFCore.Repositories
             return await query.FirstOrDefaultAsync();
         }
 
-        public async Task<IEnumerable<T>> GetAll(Expression<Func<T, bool>> expression = null, bool noTracking = false, string includeProperties = null)
+        public IQueryable<T> GetAll(Expression<Func<T, bool>> expression = null, bool noTracking = false, string includeProperties = null)
         {
             IQueryable<T> query = expression != null ? _dbSet.Where(expression) : _dbSet;
 
@@ -49,7 +49,7 @@ namespace BlogPosts.Infrastructure.EFCore.Repositories
 
             query = noTracking ? query.AsNoTracking() : query;
 
-            return await Task.FromResult(query);
+            return query;
         }
 
         public async Task<T> GetFirstOrDefault(Expression<Func<T, bool>> expression, bool noTracking = false, string includeProperties = null)

@@ -1,7 +1,11 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using BlogPosts.Application.Services.Abstracts;
 using BlogPosts.Application.Services.Requests;
 using BlogPosts.Application.Services.Responses;
+using BlogPosts.Authentication.Models.DTOs.Requests;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -54,5 +58,47 @@ namespace BlogPosts.API.Controllers
 
             return await _userService.Register(req);
         }
+
+        [HttpPost]
+        [Route("RefreshToken")]
+        public async Task<IActionResult> RefreshToken([FromBody] TokenRequest tokenRequest)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _userService.VerifyAndGenerateToken(tokenRequest);
+
+                if (result == null)
+                {
+                    return BadRequest(new UserRegisterResponse()
+                    {
+                        ValidationErrors = new List<ValidationError>()
+                        {
+                          new ValidationError("Token", "Invalid tokens")
+                          {
+                          }
+                        },
+                        Status = false
+                    });
+                }
+
+                return Ok(result);
+            }
+
+            return BadRequest(new UserRegisterResponse()
+            {
+                ValidationErrors = new List<ValidationError>()
+                        {
+                          new ValidationError("Token",  "Invalid payload")
+                          {
+                          }
+                        },
+                Status = false
+            });
+        }
+
+
+        [HttpGet("IsAuthorized")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public bool IsAuthorized() => true;
     }
 }

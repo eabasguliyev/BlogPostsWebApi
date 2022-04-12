@@ -7,7 +7,11 @@ namespace BlogPosts.Application.Services.Responses
     {
         public string Title { get; set; }
         public string Text { get; set; }
-
+    }
+    public class CreateArticleWithAuthorRequest
+    {
+        public string Title { get; set; }
+        public string Text { get; set; }
         public int AuthorId { get; set; }
     }
 }

@@ -11,7 +11,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\BlogPosts.Authentication\BlogPosts.Authentication.csproj" />
     <ProjectReference Include="..\BlogPosts.Domain\BlogPosts.Domain.csproj" />
+    <ProjectReference Include="..\BlogPosts.Infrastructure\BlogPosts.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

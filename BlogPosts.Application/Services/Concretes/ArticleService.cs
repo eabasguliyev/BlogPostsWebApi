@@ -18,12 +18,11 @@ namespace BlogPosts.Application.Services.Concretes
         }
         public async Task<List<GetAllArticleResponse>> GetAll()
         {
-            var result = await _unitOfWork.ArticleRepository.GetAll(noTracking: true, includeProperties: "Author");
+            var result = _unitOfWork.ArticleRepository.GetAll(noTracking: true, includeProperties: "Author").ToList();
             return result.Select(r => new GetAllArticleResponse
             {
                 Id = r.Id,
                 AuthorId = r.AuthorId,
-                Author = r.Author,
                 CreateDate = r.CreateDate,
                 IsDeleted = r.IsDeleted,
                 ModifyDate = r.ModifyDate,
@@ -32,12 +31,27 @@ namespace BlogPosts.Application.Services.Concretes
             }).ToList();
         }
 
-        public Task<GetAllArticleResponse> Get(int id)
+        public async Task<GetArticleByIdResponse> Get(int id)
         {
-            throw new System.NotImplementedException();
+            var article = await _unitOfWork.ArticleRepository.GetFirstOrDefault(a => a.Id == id, noTracking: true, includeProperties: "Author");
+
+            return new GetArticleByIdResponse()
+            {
+                Id = article.Id,
+                CreateDate = article.CreateDate,
+                ModifyDate = article.ModifyDate,
+                Title = article.Title,
+                Text = article.Text,
+                Author = new GetArticleByIdAuthorResponse()
+                {
+                    Id = article.AuthorId,
+                    FirstName = article.Author.FirstName,
+                    LastName = article.Author.LastName
+                }
+            };
         }
 
-        public async Task<CreateArticleResponse> Create(CreateArticleRequest req)
+        public async Task<CreateArticleResponse> Create(CreateArticleWithAuthorRequest req)
         {
             var newArticle = new Domain.Entities.Article()
             {
@@ -47,7 +61,7 @@ namespace BlogPosts.Application.Services.Concretes
             };
             
             await _unitOfWork.ArticleRepository.Add(newArticle);
-
+            await _unitOfWork.Save();
             return new CreateArticleResponse()
             {
                 Status = true,

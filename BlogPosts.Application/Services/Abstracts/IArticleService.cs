@@ -8,8 +8,8 @@ namespace BlogPosts.Application.Services.Abstracts
     public interface IArticleService
     {
         Task<List<GetAllArticleResponse>> GetAll();
-        Task<GetAllArticleResponse> Get(int id);
-        Task<CreateArticleResponse> Create(CreateArticleRequest req);
+        Task<GetArticleByIdResponse> Get(int id);
+        Task<CreateArticleResponse> Create(CreateArticleWithAuthorRequest req);
         Task Delete(int id);
         Task Update(UpdateArticleRequest req);
     }
